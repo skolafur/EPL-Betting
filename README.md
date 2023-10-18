@@ -1,1 +1,1 @@
-# EPL kúkur og piss mellan og hóran
+# EPL kúkur og piss mellan og dólgur
