@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import is.hi.eplbetting.Persistence.Entities.Bet;
+import is.hi.eplbetting.Persistence.Entities.Game;
 import is.hi.eplbetting.Services.BetService;
+import is.hi.eplbetting.Services.GameService;
 
 
 @Controller
@@ -17,6 +18,5 @@ public class BetController {
     public BetController(BetService betService) {
         this.betService = betService;
     }
-
 
 }

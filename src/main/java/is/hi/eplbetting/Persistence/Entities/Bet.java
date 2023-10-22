@@ -13,16 +13,16 @@ public class Bet{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private Game game;
-    private User user;
+    private long gameId;
+    private long userId;
     private double amount;
     private String selectedTeam;
 
     public Bet() {}
 
-    public Bet(Game game, User user, double amount, String selectedTeam) {
-        this.game = game;
-        this.user = user;
+    public Bet(long gameId, long userId, double amount, String selectedTeam) {
+        this.gameId = gameId;
+        this.userId = userId;
         this.amount = amount;
         this.selectedTeam = selectedTeam;
     }
@@ -33,20 +33,20 @@ public class Bet{
         this.id = id;
     }
 
-    public Game getGame() {
-        return game;
+    public long getGame() {
+        return gameId;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGame(long gameId) {
+        this.gameId = gameId;
     }
 
-    public User getUser() {
-        return user;
+    public long getUser() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(long userId) {
+        this.userId = userId;
     }
 
     public double getAmount() {
