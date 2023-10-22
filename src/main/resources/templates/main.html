@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+</head>
+<body>
+    <h1>This is the main page</h1>
+    <h3>Logged in as user:</h3>
+    <p th:text="${LoggedInUsername}"></p>
+    <a th:href="@{/gameslist}">View Games</a>
+    <a th:href="@{/gameslist}">Bets</a>
+    <a th:href="@{/gameslist}">Funds</a>
+    <a th:href="@{/gameslist}">Log Out</a>
+    <a th:href="@{/gameslist}">Delete User</a>
+</body>
+</html>

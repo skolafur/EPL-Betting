@@ -18,18 +18,23 @@ public class GameController {
         this.gameService = gameService;
     }
 
-    @RequestMapping("/")
+    @RequestMapping("/gameslist")
     public String gamesPage(Model model) {
 
         model.addAttribute("games", gameService.getGamesList());
         return "games";
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public String deleteGame(@PathVariable("id") int id, Model model ) {
+    @RequestMapping(value = "/gameinfo/{id}", method = RequestMethod.GET)
+    public String viewGame(@PathVariable("id") int id, Model model ) {
         Game game = gameService.getGame(id);
-        gameService.deleteGame(game);
-        return "redirect:/";
+        if (!game.isHasElapsed()) {
+            model.addAttribute("homeTeam", game.getHomeTeam());
+            model.addAttribute("awayTeam", game.getAwayTeam());
+            return "bet";
+        }
+        return "redirect:/gameslist";
+
     }
 
 }

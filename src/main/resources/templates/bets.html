@@ -2,12 +2,12 @@
 <html xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Bets</title>
 </head>
 <body>
 
     <div th:switch="${games}">
-        <h2 th:case="null">No Games yet!</h2>
+        <h2 th:case="null">No Bets yet!</h2>
         <div th:case="*">
             <h2>Games</h2>
             <table>
@@ -23,12 +23,12 @@
                     <td th:text="${game.homeTeam}"></td>
                     <td th:text="${game.awayTeam}"></td>
                     <td th:text="${game.hasElapsed}"></td>
-                    <td><a th:href="@{/gameinfo/{id}(id=${game.id})}">Bet on game</a></td>
+                    <td><a th:href="@{/delete/{id}(id=${game.id})}">Delete</a></td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <p><a th:href="@{/}">Go back!</a></p>
+        <p><a href="/addbook">Add a new book</a></p>
     </div>
 </body>
 </html>

@@ -50,8 +50,4 @@ public class Game{
         this.hasElapsed = hasElapsed;
     }
 
-
-
-    
-
 }

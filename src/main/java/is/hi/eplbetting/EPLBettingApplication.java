@@ -8,7 +8,6 @@ public class EPLBettingApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(EPLBettingApplication.class, args);
-
     }
 
 }

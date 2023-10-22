@@ -8,10 +8,9 @@ import is.hi.eplbetting.Persistence.Entities.Game;
 
 public interface GameRepository extends JpaRepository<Game, Long>{
 
-    Game save(Game game);
+    <S extends Game> S save(Game game);
     void delete(Game game);
     List<Game> findAll();
     Game findById(long id);
-    
     
 }
