@@ -12,7 +12,7 @@ public class UserController {
 
     @RequestMapping("/")
     public String UserController() {
-        return "home";
+        return "bet";
     }
     
 }

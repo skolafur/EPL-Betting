@@ -15,7 +15,7 @@ import is.hi.eplbetting.Models.BetResult;
 
 @RestController
 @RequestMapping("/bet")
-public class GameController {
+public class BetController {
 
  @PostMapping(value = "/bet", produces = MediaType.APPLICATION_JSON_VALUE)
     public BetResult getBet(@RequestBody Bet bet) {
