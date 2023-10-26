@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage funds</title>
+</head>
+<body>
+    <h1>Manage your funds</h1>
+    <p>Balance: </p>
+        <p th:text="${currBalance}">Balance: </p>
+    <form action="/deposit" method="post" th:object="${user}">
+        <label for="deposit">Deposit</label> <br>
+        <input type="number" id="deposit" th:field="*{deposit}"/> <br>
+        <button type="submit">Deposit amount</button>
+    </form>
+    <form action="/withdraw" method="post" th:object="${user}">
+        <label for="withdraw">Withdraw</label> <br>
+        <input type="number" id="withdraw" th:field="*{withdrawal}"/> <br>
+        <button type="submit">Withdraw amount</button>
+    </form>
+    <a th:href="@{/main}">Back to main page</a>
+</body>
+</html>

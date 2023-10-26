@@ -15,15 +15,35 @@ public class User {
     private long id;
     private String username;
     private String password;
-    private boolean loggedIn;
+    private double balance;
+    private double deposit;
+    private double withdrawal;
 
     public User() {
     }
     
-    public User(String username, String password, boolean loggedIn) {
+    public User(String username, String password, double balance, double deposit, double withdrawal) {
         this.username = username;
         this.password = password;
-        this.loggedIn = loggedIn;
+        this.balance = balance;
+        this.deposit = deposit;
+        this.withdrawal = withdrawal;
+    }
+
+    public double getDeposit() {
+        return deposit;
+    }
+
+    public void setDeposit(double deposit) {
+        this.deposit = deposit;
+    }
+
+    public double getWithdrawal() {
+        return withdrawal;
+    }
+
+    public void setWithdrawal(double withdrawal) {
+        this.withdrawal = withdrawal;
     }
 
     public String getUsername() {
@@ -38,8 +58,8 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-    public boolean isLoggedIn() {
-        return loggedIn;
+    public double getBalance() {
+        return balance;
     }
     public long getId() {
         return id;
@@ -47,8 +67,8 @@ public class User {
     public void setId(long id) {
         this.id = id;
     }
-    public void setLoggedIn(boolean loggedIn) {
-        this.loggedIn = loggedIn;
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
     
 }

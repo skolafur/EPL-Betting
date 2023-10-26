@@ -91,9 +91,14 @@ public class BetController {
             if (bet.getAmount() < 1) {
                 return "redirect:" + currentUrl;
             }
+            if (user.getBalance() < bet.getAmount()) {
+                return "redirect:" + currentUrl;
+            }
+            user.setBalance(user.getBalance() - bet.getAmount());
             Bet newBet = (Bet) session.getAttribute("newBet");
             newBet.setSelectedTeam(bet.getSelectedTeam()); //
             newBet.setAmount(bet.getAmount());
+            userService.createUser(user);
             betService.createBet(newBet);
             return "redirect:/gameslist";
         }
@@ -106,6 +111,9 @@ public class BetController {
         }
         else {
             Bet bet = betService.getBet(id);
+            User user = (User) session.getAttribute("LoggedInUser");
+            user.setBalance(user.getBalance() + bet.getAmount());
+            userService.createUser(user);
             betService.deleteBet(bet);
             return "redirect:/betslist";
         }

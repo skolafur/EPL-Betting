@@ -5,6 +5,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -26,9 +28,8 @@ public class UserController {
             return "redirect:/login";
         }
         else {
-            return "/main";
+            return "redirect:/main";
         }
-        
     }
     
     @RequestMapping(value = "/main")
@@ -81,6 +82,19 @@ public class UserController {
         return "redirect:/login";
     }
 
+    @RequestMapping(value = "/funds")
+    public String fundsPage(Model model, HttpSession session) {
+        if (checkLogin(session)) {
+            return "redirect:/login";
+        }
+        else {
+            User sessionUser = (User) session.getAttribute("LoggedInUser");
+            model.addAttribute("user", sessionUser);
+            model.addAttribute("currBalance", sessionUser.getBalance());
+            return "funds";
+        }
+    }
+
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public String logout(Model model, HttpSession session) {
         User user = new User();
@@ -98,6 +112,38 @@ public class UserController {
             logout(model, session);
             userService.deleteUser(user);
             return "redirect:/login";
+        }
+    }
+
+    @RequestMapping(value = "/deposit", method = RequestMethod.POST)
+    public String deposit(@ModelAttribute("user") User user, BindingResult result, Model model, HttpSession session) {
+        if (checkLogin(session)) {
+            return "redirect:/login";
+        }
+        else {
+            if (user.getDeposit() > 0) {
+                User currUser = (User) session.getAttribute("LoggedInUser");
+                currUser.setBalance(currUser.getBalance() + user.getDeposit());
+                userService.createUser(currUser);
+            }
+            return "redirect:/funds";
+        }
+    }
+
+    @RequestMapping(value = "/withdraw", method = RequestMethod.POST)
+    public String withdraw(@ModelAttribute("user") User user, BindingResult result, Model model, HttpSession session) {
+        if (checkLogin(session)) {
+            return "redirect:/login";
+        }
+        else {
+            if (user.getWithdrawal() > 0) {
+                User currUser = (User) session.getAttribute("LoggedInUser");
+                if (currUser.getBalance() >= user.getWithdrawal()) {
+                    currUser.setBalance(currUser.getBalance() - user.getWithdrawal());
+                    userService.createUser(currUser);
+                }
+            }
+            return "redirect:/funds";
         }
     }
 
