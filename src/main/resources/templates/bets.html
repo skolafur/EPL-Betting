@@ -6,29 +6,29 @@
 </head>
 <body>
 
-    <div th:switch="${games}">
+    <div th:switch="${bets}">
         <h2 th:case="null">No Bets yet!</h2>
         <div th:case="*">
-            <h2>Games</h2>
+            <h2>Your Bets</h2>
             <table>
                 <thead>
                 <tr>
-                    <th>Home Team</th>
-                    <th>Away Team</th>
-                    <th>Has Elapsed</th>
+                    <th>Game ID</th>
+                    <th>Selected Team</th>
+                    <th>Amount</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="game : ${games}">
-                    <td th:text="${game.homeTeam}"></td>
-                    <td th:text="${game.awayTeam}"></td>
-                    <td th:text="${game.hasElapsed}"></td>
-                    <td><a th:href="@{/delete/{id}(id=${game.id})}">Delete</a></td>
+                <tr th:each="bet : ${bets}">
+                    <td th:text="${bet.gameId}"></td>
+                    <td th:text="${bet.selectedTeam}"></td>
+                    <td th:text="${bet.amount}"></td>
+                    <td><a th:href="@{/deleteBet/{id}(id=${bet.Id})}">Delete</a></td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <p><a href="/addbook">Add a new book</a></p>
+        <p><a th:href="@{/}">Go back!</a></p>
     </div>
 </body>
 </html>

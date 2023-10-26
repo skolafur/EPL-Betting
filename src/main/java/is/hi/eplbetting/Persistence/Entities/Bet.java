@@ -17,6 +17,15 @@ public class Bet{
     private long userId;
     private double amount;
     private String selectedTeam;
+    private boolean hasElapsed;
+
+    public boolean isHasElapsed() {
+        return hasElapsed;
+    }
+
+    public void setHasElapsed(boolean hasElapsed) {
+        this.hasElapsed = hasElapsed;
+    }
 
     public Bet() {}
 
@@ -33,19 +42,19 @@ public class Bet{
         this.id = id;
     }
 
-    public long getGame() {
+    public long getGameId() {
         return gameId;
     }
 
-    public void setGame(long gameId) {
+    public void setGameId(long gameId) {
         this.gameId = gameId;
     }
 
-    public long getUser() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUser(long userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

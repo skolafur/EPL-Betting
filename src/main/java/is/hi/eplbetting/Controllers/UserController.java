@@ -22,18 +22,25 @@ public class UserController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String loggedinGET(Model model, HttpSession session) {
-        User sessionUser = (User) session.getAttribute("LoggedInUser");
-        if (sessionUser != null) {
-            return "redirect:/main";
+        if (checkLogin(session)) {
+            return "redirect:/login";
         }
-        return "redirect:/login";
+        else {
+            return "/main";
+        }
+        
     }
     
     @RequestMapping(value = "/main")
     public String mainPage(Model model, HttpSession session) {
-        User sessionUser = (User) session.getAttribute("LoggedInUser");
-        model.addAttribute("LoggedInUsername", sessionUser.getUsername());
-        return "main";
+        if (checkLogin(session)) {
+            return "redirect:/login";
+        }
+        else {
+            User sessionUser = (User) session.getAttribute("LoggedInUser");
+            model.addAttribute("LoggedInUsername", sessionUser.getUsername());
+            return "main";
+        }
     }
     
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
@@ -51,7 +58,7 @@ public class UserController {
             userService.createUser(user);
             return "redirect:/login";
         }
-        return "signup";
+        return "redirect:/signup";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -72,5 +79,36 @@ public class UserController {
         }
 
         return "redirect:/login";
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logout(Model model, HttpSession session) {
+        User user = new User();
+        session.setAttribute("LoggedInUser", user);
+        return "redirect:/login";
+    }
+
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.GET)
+    public String deleteUser(Model model, HttpSession session) {
+        if (checkLogin(session)) {
+            return "redirect:/login";
+        }
+        else {
+            User user = (User) session.getAttribute("LoggedInUser");
+            logout(model, session);
+            userService.deleteUser(user);
+            return "redirect:/login";
+        }
+    }
+
+    public boolean checkLogin(HttpSession session) {
+        User user = (User) session.getAttribute("LoggedInUser");
+        if (user == null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
     }
 }

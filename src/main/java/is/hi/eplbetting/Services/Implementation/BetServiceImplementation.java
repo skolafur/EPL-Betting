@@ -1,10 +1,13 @@
 package is.hi.eplbetting.Services.Implementation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import is.hi.eplbetting.Persistence.Entities.Bet;
+import is.hi.eplbetting.Persistence.Entities.Game;
+import is.hi.eplbetting.Persistence.Entities.User;
 import is.hi.eplbetting.Persistence.Repositories.BetRepository;
 import is.hi.eplbetting.Services.BetService;
 
@@ -23,26 +26,41 @@ public class BetServiceImplementation implements BetService{
 
     @Override
     public void deleteBet(Bet bet) {
-        // TODO Auto-generated method stub
+       betRepository.delete(bet);
         
     }
 
     @Override
-    public Bet getBet(long id) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getBetInfo(long id) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public List<Bet> getBetsList() {
-        // TODO Auto-generated method stub
+        return betRepository.findAll();
+    }
+
+    @Override
+    public List<Bet> getBetsByUserId(long userId) {
+        List<Bet> allBets = betRepository.findAll();
+        List<Bet> bets = new ArrayList<Bet>();
+        for (Bet bet: allBets) {
+            if (bet.getUserId() == userId) {
+                bets.add(bet);
+            }
+        }
+        return bets;
+    }
+
+    @Override
+    public Bet getBet(long gameId, long userId) {
+        List<Bet> bets = getBetsByUserId(userId);
+        for (Bet bet: bets) {
+            if (bet.getGameId() == gameId) {
+                return bet;
+            }
+        }
         return null;
+    }
+
+    @Override
+    public Bet getBet(long betId) {
+        return betRepository.getById(betId);
     }
     
 }
