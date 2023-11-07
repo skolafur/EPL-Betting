@@ -23,7 +23,8 @@
                     <td th:text="${bet.gameId}"></td>
                     <td th:text="${bet.selectedTeam}"></td>
                     <td th:text="${bet.amount}"></td>
-                    <td><a th:href="@{/deleteBet/{id}(id=${bet.Id})}">Delete</a></td>
+                    <td><a th:href="@{/modifyBet/{id}(id=${bet.id})}">Modify</a></td>
+                    <td><a th:href="@{/deleteBet/{id}(id=${bet.id})}">Delete</a></td>
                 </tr>
                 </tbody>
             </table>

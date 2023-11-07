@@ -6,8 +6,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import is.hi.eplbetting.Persistence.Entities.Bet;
-import is.hi.eplbetting.Persistence.Entities.Game;
-import is.hi.eplbetting.Persistence.Entities.User;
 import is.hi.eplbetting.Persistence.Repositories.BetRepository;
 import is.hi.eplbetting.Services.BetService;
 
@@ -60,7 +58,7 @@ public class BetServiceImplementation implements BetService{
 
     @Override
     public Bet getBet(long betId) {
-        return betRepository.getById(betId);
+        return betRepository.findById(betId);
     }
     
 }

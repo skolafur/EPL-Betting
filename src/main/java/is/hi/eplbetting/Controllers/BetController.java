@@ -1,6 +1,5 @@
 package is.hi.eplbetting.Controllers;
 
-import java.net.http.HttpRequest;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -101,6 +100,58 @@ public class BetController {
             userService.createUser(user);
             betService.createBet(newBet);
             return "redirect:/gameslist";
+        }
+    }
+
+    @RequestMapping(value = "/modifybetPOST", method = RequestMethod.POST)
+    public String modifybetPOST(@ModelAttribute("bet") Bet bet, User user, BindingResult result, Model model, HttpSession session) {
+        if (userController.checkLogin(session)) {
+            return "redirect:/login";
+        }
+        else {
+            String currentUrl = (String) session.getAttribute("currentUrl");
+            user = (User) session.getAttribute("LoggedInUser");
+            Bet oldBet = (Bet) session.getAttribute("oldbet");
+            if (result.hasErrors()) {
+                return "redirect:" + currentUrl;
+            }
+            if ((oldBet.getSelectedTeam() == bet.getSelectedTeam()) && (oldBet.getAmount() == bet.getAmount())) {
+                return "redirect:" + currentUrl;
+            }
+            if (bet.getAmount() < 1) {
+                return "redirect:" + currentUrl;
+            }
+            if (bet.getAmount() > oldBet.getAmount()) {
+                if (bet.getAmount() - oldBet.getAmount() > user.getBalance()) {
+                    return "redirect:" + currentUrl;
+                }
+            }
+            user.setBalance(user.getBalance() - (bet.getAmount() - oldBet.getAmount()));
+            oldBet.setAmount(bet.getAmount());
+            if (oldBet.getSelectedTeam() != bet.getSelectedTeam()) {
+                oldBet.setSelectedTeam(bet.getSelectedTeam());
+            }
+            betService.createBet(oldBet);
+            userService.createUser(user);
+            return "redirect:/betslist";
+        }
+    }
+
+    @RequestMapping(value="/modifyBet/{id}", method = RequestMethod.GET)
+    public String modifyBet(@PathVariable("id") long id, Model model, HttpSession session, HttpServletRequest request){
+        if (userController.checkLogin(session)) {
+            return "redirect:/login";
+        }
+        else {
+            Bet bet = betService.getBet(id);
+            Game game = gameService.getGame(bet.getGameId());
+            model.addAttribute("homeTeam", game.getHomeTeam());
+            model.addAttribute("awayTeam", game.getAwayTeam());
+            model.addAttribute("bet", bet);
+            session.setAttribute("oldbet", bet);
+            String currentUrl = request.getRequestURL().toString();
+            session.setAttribute("currentUrl", currentUrl);
+            return "modifybet";
         }
     }
 
