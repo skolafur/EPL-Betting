@@ -6,8 +6,8 @@
 </head>
 <body>
     <h1>Bet on the game</h1>
-    <p th:text="${homeTeam}">Home team: </p>
-    <p th:text="${awayTeam}">Away team: </p>
+    <p th:text="${homeTeam}"></p>
+    <p th:text="${awayTeam}"></p>
     <form action="/betPOST" method="post" th:object="${bet}">
         <p>Selected Team: </p>
         <select th:field="*{selectedTeam}">
@@ -18,6 +18,9 @@
         <label for="amount">Amount:</label> <br>
         <input type="number" id="amount" th:field="*{amount}"/> <br>
         <button type="submit">Place Bet</button>
+        <p th:text="'Multiplier 1: ' + ${bet.multiplier1}"></p>
+        <p th:text="'Multiplier X: ' + ${bet.multiplierX}"></p>
+        <p th:text="'Multiplier 2: ' + ${bet.multiplier2}"></p>
     </form>
     <a th:href="@{/gameslist}">Back to games</a>
 </body>

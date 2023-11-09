@@ -42,9 +42,31 @@ public class BetController {
         }
         else {
             User user = (User) session.getAttribute("LoggedInUser");
-            List<Bet> bets = betService.getBetsByUserId(user.getId());
+            List<Bet> bets;
+            if (user.isAdmin()) {
+                bets = betService.getBetsList();
+            }
+            else {
+                bets = betService.getBetsByUserId(user.getId());
+            }
             model.addAttribute("bets", bets);
             return "bets";
+        }
+    }
+
+    @RequestMapping(value = "/makeormodify/{id}", method = RequestMethod.GET)
+    public String makeormodify(@PathVariable("id") int id, Model model, HttpSession session, HttpServletRequest request) {
+        if (userController.checkLogin(session)) {
+            return "redirect:/login";
+        }
+        else {
+            Game game = (Game) gameService.getGame(id);
+            if (game.isUserHasBetted()) {
+                return "redirect:/modifyBet/{id}";
+            }
+            else {
+                return "redirect:/gameinfo/{id}";
+            }
         }
     }
 
@@ -55,7 +77,7 @@ public class BetController {
         }
         else {
             Game game = (Game) gameService.getGame(id);
-            if (!game.isHasElapsed()) {
+            if (!game.isHasStarted()) {
                 model.addAttribute("homeTeam", game.getHomeTeam());
                 model.addAttribute("awayTeam", game.getAwayTeam());
                 User user = (User) session.getAttribute("LoggedInUser");
@@ -64,6 +86,10 @@ public class BetController {
                     Bet newBet = betService.createBet(new Bet());
                     newBet.setGameId(game.getId());
                     newBet.setUserId(user.getId());
+                    newBet.setMultiplier1(2);
+                    newBet.setMultiplierX(2);
+                    newBet.setMultiplier2(2);
+                    betService.createBet(newBet);
                     session.setAttribute("newBet", newBet);
                     model.addAttribute("bet", newBet);
                     session.setAttribute("gameId", newBet.getGameId());
@@ -99,6 +125,10 @@ public class BetController {
             newBet.setAmount(bet.getAmount());
             userService.createUser(user);
             betService.createBet(newBet);
+            Game game = gameService.getGame(newBet.getGameId());
+            game.setUserHasBetted(true);
+            game.setBetId(newBet.getId());
+            gameService.createGame(game);
             return "redirect:/gameslist";
         }
     }
@@ -110,8 +140,8 @@ public class BetController {
         }
         else {
             String currentUrl = (String) session.getAttribute("currentUrl");
-            user = (User) session.getAttribute("LoggedInUser");
             Bet oldBet = (Bet) session.getAttribute("oldbet");
+            user = userService.getById(oldBet.getUserId());
             if (result.hasErrors()) {
                 return "redirect:" + currentUrl;
             }
@@ -162,9 +192,13 @@ public class BetController {
         }
         else {
             Bet bet = betService.getBet(id);
-            User user = (User) session.getAttribute("LoggedInUser");
+            User user = userService.getById(bet.getUserId());
             user.setBalance(user.getBalance() + bet.getAmount());
             userService.createUser(user);
+            Game game = gameService.getGame(bet.getGameId());
+            game.setUserHasBetted(false);
+            game.setBetId(bet.getId());
+            gameService.createGame(game);
             betService.deleteBet(bet);
             return "redirect:/betslist";
         }

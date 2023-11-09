@@ -13,17 +13,40 @@
             <table>
                 <thead>
                 <tr>
+                    <th>Date</th>
+                    <td>&nbsp;&nbsp;
+                    <th>Time</th>
+                    <td>&nbsp;&nbsp;
                     <th>Home Team</th>
+                    <td>&nbsp;&nbsp;
+                    <th></th>
+                    <td>&nbsp;&nbsp;
+                    <th></th>
+                    <td>&nbsp;&nbsp;
                     <th>Away Team</th>
-                    <th>Has Elapsed</th>
+                    <td>&nbsp;&nbsp;
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="game : ${games}">
-                    <td th:text="${game.homeTeam}"></td>
-                    <td th:text="${game.awayTeam}"></td>
-                    <td th:text="${game.hasElapsed}"></td>
-                    <td><a th:href="@{/gameinfo/{id}(id=${game.id})}">Bet on game</a></td>
+                    <td th:text="${game.dateStr}" style="color: grey;"></td>
+                    <td>&nbsp;&nbsp;
+                    <td th:text="${game.timeStr}" style="color: grey;"></td>
+                    <td>&nbsp;&nbsp;
+                    <td th:text="${game.homeTeam}" th:style="'color: ' + (${game.hasStarted} ? (${game.hasFinished} ? 'red' : 'green') : 'black')"></td>
+                    <td>&nbsp;&nbsp;
+                    <td th:if="${game.hasStarted}==true" th:text="${game.homeTeamScore}" th:style="'color: ' + (${game.hasStarted} ? (${game.hasFinished} ? 'red' : 'green') : 'black')"></td>
+                    <td th:unless="${game.hasStarted}==true" th:style="'color: ' + (${game.hasStarted} ? (${game.hasFinished} ? 'red' : 'green') : 'black')"></td>
+                    <td>&nbsp;&nbsp;
+                    <td th:if="${game.hasStarted}==true" th:text="${game.awayTeamScore}" th:style="'color: ' + (${game.hasStarted} ? (${game.hasFinished} ? 'red' : 'green') : 'black')"></td>
+                    <td th:unless="${game.hasStarted}==true" th:style="'color: ' + (${game.hasStarted} ? (${game.hasFinished} ? 'red' : 'green') : 'black')"></td>
+                    <td>&nbsp;&nbsp;
+                    <td th:text="${game.awayTeam}" th:style="'color: ' + (${game.hasStarted} ? (${game.hasFinished} ? 'red' : 'green') : 'black')"></td>
+                    <td>&nbsp;&nbsp;
+                    <td>
+                        <a th:if="${!game.hasStarted}" th:href="@{/makeormodify/{id}(id=${game.id})}" >Bet</a>
+                    </td>
+                    <td>&nbsp;&nbsp;
                 </tr>
                 </tbody>
             </table>

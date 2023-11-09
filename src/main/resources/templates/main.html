@@ -8,10 +8,17 @@
     <h1>This is the main page</h1>
     <h3>Logged in as user:</h3>
     <p th:text="${LoggedInUsername}"></p>
-    <a th:href="@{/gameslist}">View Games</a>
-    <a th:href="@{/betslist}">Bets</a>
-    <a th:href="@{/funds}">Funds</a>
-    <a th:href="@{/logout}">Log Out</a>
-    <a th:href="@{/deleteUser}">Delete User</a>
+    <a th:href="@{/gameslist}">View Games</a><br>
+    <a th:href="@{/betslist}">Bets</a><br>
+    <a th:href="@{/funds}">Funds</a><br>
+    <div th:switch="${userRole}"> 
+        <a th:case="true" th:href="@{/usersList}">Users</p>
+        <p th:case="false"></p>
+    </div><br>
+    <a th:href="@{/logout}">Log Out</a><br>
+    <div th:switch="${userRole}"> 
+        <p th:case="true"></p>
+        <a th:case="false" th:href="@{/deleteUser}">Delete User</p>
+    </div><br>
 </body>
 </html>

@@ -1,6 +1,10 @@
 package is.hi.eplbetting.Services.Implementation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -31,10 +35,63 @@ public class GameServiceImplentation implements GameService{
         for (int i = 0; i  < fixtures.size(); i++) {
             JsonObject jsonObject = fixtures.get(i).getAsJsonObject();
             Game game = new Game();
-            
             game.setHomeTeam(teams[jsonObject.get("team_h").getAsInt() - 1]);
             game.setAwayTeam(teams[jsonObject.get("team_a").getAsInt() - 1]);
-            game.setHasElapsed(jsonObject.get("finished").getAsBoolean());
+            if (jsonObject.has("started") && !jsonObject.get("started").isJsonNull()) {
+                game.setHasStarted(jsonObject.get("started").getAsBoolean());
+                if (jsonObject.has("team_a_score") && !jsonObject.get("team_a_score").isJsonNull()) {
+                    game.setAwayTeamScore(jsonObject.get("team_a_score").getAsInt());
+                }
+                else {
+                    game.setAwayTeamScore(0);
+                }
+                if (jsonObject.has("team_h_score") && !jsonObject.get("team_h_score").isJsonNull()) {
+                    game.setHomeTeamScore(jsonObject.get("team_h_score").getAsInt());
+                }
+                else {
+                    game.setHomeTeamScore(0);
+                }
+                
+            }
+            else {
+                game.setHasStarted(false);
+            }
+            game.setHasFinished(jsonObject.get("finished").getAsBoolean());
+            gameRepository.save(game);
+
+            if (jsonObject.has("kickoff_time") && !jsonObject.get("kickoff_time").isJsonNull()) {
+                String kickoffTime = jsonObject.get("kickoff_time").getAsString();
+
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+                Date date;
+
+                try {
+
+                    date = inputFormat.parse(kickoffTime);
+
+                } catch (ParseException e) {
+
+                    e.printStackTrace();
+                    return;
+                }
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy", Locale.US);
+                String formattedDate = dateFormat.format(date);
+
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.US);
+                String formattedTime = timeFormat.format(date);
+
+                game.setDateStr(formattedDate);
+                game.setTimeStr(formattedTime);
+
+            }
+            else {
+
+                game.setDateStr("TBD");
+                game.setTimeStr("TBD");
+
+            }
+    
             gameRepository.save(game);
         }
     }
@@ -83,7 +140,7 @@ public class GameServiceImplentation implements GameService{
 
     @Override
     public Game getGame(long id) {
-        return gameRepository.getById(id);
+        return gameRepository.findById(id);
     }
     
 }

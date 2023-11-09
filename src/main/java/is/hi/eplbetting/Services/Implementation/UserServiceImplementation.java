@@ -15,6 +15,11 @@ public class UserServiceImplementation implements UserService{
 
     public UserServiceImplementation(UserRepository userRepository) {
         this.userRepository = userRepository;
+        User admin = new User();
+        admin.setUsername("admin");
+        admin.setPassword("admin");
+        admin.setAdmin(true);
+        userRepository.save(admin);
     }
 
     @Override
@@ -30,6 +35,11 @@ public class UserServiceImplementation implements UserService{
     @Override
     public User getByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public User getById(long id) {
+        return userRepository.findById(id);
     }
 
     @Override

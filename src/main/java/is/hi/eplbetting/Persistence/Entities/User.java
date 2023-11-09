@@ -18,16 +18,26 @@ public class User {
     private double balance;
     private double deposit;
     private double withdrawal;
+    private boolean isAdmin;
 
     public User() {
     }
     
-    public User(String username, String password, double balance, double deposit, double withdrawal) {
+    public User(String username, String password, double balance, double deposit, double withdrawal, boolean isAdmin) {
         this.username = username;
         this.password = password;
         this.balance = balance;
         this.deposit = deposit;
         this.withdrawal = withdrawal;
+        this.isAdmin = isAdmin;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
     public double getDeposit() {
