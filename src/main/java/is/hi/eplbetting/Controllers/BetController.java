@@ -111,12 +111,18 @@ public class BetController {
             String currentUrl = (String) session.getAttribute("currentUrl");
             user = (User) session.getAttribute("LoggedInUser");
             if (result.hasErrors()) {
+                Bet newBet = (Bet) session.getAttribute("newBet");
+                betService.deleteBet(newBet);
                 return "redirect:" + currentUrl;
             }
             if (bet.getAmount() < 1) {
+                Bet newBet = (Bet) session.getAttribute("newBet");
+                betService.deleteBet(newBet);
                 return "redirect:" + currentUrl;
             }
             if (user.getBalance() < bet.getAmount()) {
+                Bet newBet = (Bet) session.getAttribute("newBet");
+                betService.deleteBet(newBet);
                 return "redirect:" + currentUrl;
             }
             user.setBalance(user.getBalance() - bet.getAmount());
@@ -163,6 +169,7 @@ public class BetController {
             }
             betService.createBet(oldBet);
             userService.createUser(user);
+            session.setAttribute("LoggedInUser", user);
             return "redirect:/betslist";
         }
     }

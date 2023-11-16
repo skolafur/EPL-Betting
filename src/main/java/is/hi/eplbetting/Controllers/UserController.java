@@ -74,7 +74,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
-    public String signupPOST(User user, BindingResult result, Model model) {
+    public String signupPOST(User user, BindingResult result, Model model, HttpSession session) {
         if (result.hasErrors()) {
             return "redirect:/signup";
         }
@@ -82,7 +82,15 @@ public class UserController {
         if (exists == null) {
             user.setBalance(10);
             userService.createUser(user);
-            return "redirect:/login";
+            session.setAttribute("LoggedInUser", user);
+            List<Bet> bets = betService.getBetsByUserId(user.getId());
+            for (Bet bet: bets) {
+                Game game = gameService.getGame(bet.getGameId());
+                game.setUserHasBetted(true);
+                game.setBetId(bet.getId());
+                gameService.createGame(game);
+            }
+            return "redirect:/";
         }
         return "redirect:/signup";
     }
