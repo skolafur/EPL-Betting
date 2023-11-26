@@ -15,11 +15,15 @@ public class UserServiceImplementation implements UserService{
 
     public UserServiceImplementation(UserRepository userRepository) {
         this.userRepository = userRepository;
-        User admin = new User();
-        admin.setUsername("admin");
-        admin.setPassword("admin");
-        admin.setAdmin(true);
-        userRepository.save(admin);
+
+        User admin = userRepository.findById(1);
+        if (admin == null) {
+            admin = new User();
+            admin.setUsername("admin");
+            admin.setPassword("admin");
+            admin.setAdmin(true);
+            userRepository.save(admin);
+        }
     }
 
     @Override
@@ -58,10 +62,5 @@ public class UserServiceImplementation implements UserService{
         return null;
     }
 
-    @Override
-    public void logout(User user) {
-        // TODO Auto-generated method stub
-        
-    }
     
 }

@@ -18,9 +18,9 @@
         <label for="amount">Amount:</label> <br>
         <input type="number" id="amount" th:field="*{amount}"/> <br>
         <button type="submit">Place Bet</button>
-        <p th:text="'Multiplier 1: ' + ${bet.multiplier1}"></p>
-        <p th:text="'Multiplier X: ' + ${bet.multiplierX}"></p>
-        <p th:text="'Multiplier 2: ' + ${bet.multiplier2}"></p>
+        <p th:text="'Multiplier 1: ' + ${multiplier1}"></p>
+        <p th:text="'Multiplier X: ' + ${multiplierX}"></p>
+        <p th:text="'Multiplier 2: ' + ${multiplier2}"></p>
     </form>
     <a th:href="@{/backtogames}">Back to games</a>
 </body>

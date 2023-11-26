@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Game</title>
+</head>
+<body>
+    <form th:object="${game}" action="/updateGame" method="post">
+        <input type="hidden" th:field="*{id}" />
+        
+        <label for="homeTeam">Home Team:</label>
+        <input type="text" id="homeTeam" th:field="*{homeTeam}" />
+        
+        <label for="awayTeam">Away Team:</label>
+        <input type="text" id="awayTeam" th:field="*{awayTeam}" />
+        
+        <label for="homeTeamScore">Home Team Score:</label>
+        <input type="number" id="homeTeamScore" th:field="*{homeTeamScore}" />
+        
+        <label for="awayTeamScore">Away Team Score:</label>
+        <input type="number" id="awayTeamScore" th:field="*{awayTeamScore}" />
+        
+        <label for="hasStarted">Has Started:</label>
+        <input type="checkbox" id="hasStarted" th:field="*{hasStarted}" />
+        
+        <label for="hasFinished">Has Finished:</label>
+        <input type="checkbox" id="hasFinished" th:field="*{hasFinished}" />
+        
+        <label for="dateStr">Date:</label>
+        <input type="text" id="dateStr" th:field="*{dateStr}" />
+        
+        <label for="timeStr">Time:</label>
+        <input type="text" id="timeStr" th:field="*{timeStr}" />
+        
+        <input type="submit" value="Save Changes" />
+    </form>
+</body>
+</html>

@@ -5,12 +5,14 @@
     <title>Main Page</title>
 </head>
 <body>
-    <h1>This is the main page</h1>
     <h3>Logged in as user:</h3>
     <p th:text="${LoggedInUsername}"></p>
     <a th:href="@{/gameslist}">View Games</a><br>
     <a th:href="@{/betslist}">Bets</a><br>
-    <a th:href="@{/funds}">Funds</a><br>
+    <div th:switch="${userRole}"> 
+        <a th:case="false" th:href="@{/funds}">Funds</p>
+        <p th:case="true"></p>
+    </div><br>
     <div th:switch="${userRole}"> 
         <a th:case="true" th:href="@{/usersList}">Users</p>
         <p th:case="false"></p>

@@ -17,82 +17,97 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import is.hi.eplbetting.Persistence.Entities.Bet;
 import is.hi.eplbetting.Persistence.Entities.Game;
+import is.hi.eplbetting.Persistence.Entities.User;
 import is.hi.eplbetting.Persistence.Repositories.GameRepository;
+import is.hi.eplbetting.Services.BetService;
 import is.hi.eplbetting.Services.GameService;
+import is.hi.eplbetting.Services.UserService;
 
 @Service
 public class GameServiceImplentation implements GameService{
     private GameRepository gameRepository;
+    private BetService betService;
+    private UserService userService;
 
-    public GameServiceImplentation(GameRepository gameRepository) {
+    public GameServiceImplentation(GameRepository gameRepository, BetService betService, UserService userService) {
         this.gameRepository = gameRepository;
+        this.betService = betService;
+        this.userService = userService;
 
-        String[] teams = {"ARS", "AVL", "BOU", "BRE", "BHA", "BUR", "CHE", "CRY", "EVE", "FUL", "LIV", "LUT", "MCI", "MUN", "NEW", "NFO", "SHU", "TOT", "WHU", "WOL"};
+        Game check = gameRepository.findById(1);
 
-        JsonArray fixtures = getFixtures();
+        if (check == null){
+                String[] teams = {"ARS", "AVL", "BOU", "BRE", "BHA", "BUR", "CHE", "CRY", "EVE", "FUL", "LIV", "LUT", "MCI", "MUN", "NEW", "NFO", "SHU", "TOT", "WHU", "WOL"};
 
-        for (int i = 0; i  < fixtures.size(); i++) {
-            JsonObject jsonObject = fixtures.get(i).getAsJsonObject();
-            Game game = new Game();
-            game.setHomeTeam(teams[jsonObject.get("team_h").getAsInt() - 1]);
-            game.setAwayTeam(teams[jsonObject.get("team_a").getAsInt() - 1]);
-            if (jsonObject.has("started") && !jsonObject.get("started").isJsonNull()) {
-                game.setHasStarted(jsonObject.get("started").getAsBoolean());
-                if (jsonObject.has("team_a_score") && !jsonObject.get("team_a_score").isJsonNull()) {
-                    game.setAwayTeamScore(jsonObject.get("team_a_score").getAsInt());
+            JsonArray fixtures = getFixtures();
+
+            for (int i = 0; i  < fixtures.size(); i++) {
+                JsonObject jsonObject = fixtures.get(i).getAsJsonObject();
+                Game game = new Game();
+                game.setHomeTeam(teams[jsonObject.get("team_h").getAsInt() - 1]);
+                game.setAwayTeam(teams[jsonObject.get("team_a").getAsInt() - 1]);
+                if (jsonObject.has("started") && !jsonObject.get("started").isJsonNull()) {
+                    game.setHasStarted(jsonObject.get("started").getAsBoolean());
+                    if (jsonObject.has("team_a_score") && !jsonObject.get("team_a_score").isJsonNull()) {
+                        game.setAwayTeamScore(jsonObject.get("team_a_score").getAsInt());
+                    }
+                    else {
+                        game.setAwayTeamScore(0);
+                    }
+                    if (jsonObject.has("team_h_score") && !jsonObject.get("team_h_score").isJsonNull()) {
+                        game.setHomeTeamScore(jsonObject.get("team_h_score").getAsInt());
+                    }
+                    else {
+                        game.setHomeTeamScore(0);
+                    }
+                    
                 }
                 else {
-                    game.setAwayTeamScore(0);
+                    game.setHasStarted(false);
                 }
-                if (jsonObject.has("team_h_score") && !jsonObject.get("team_h_score").isJsonNull()) {
-                    game.setHomeTeamScore(jsonObject.get("team_h_score").getAsInt());
+                game.setHasFinished(jsonObject.get("finished").getAsBoolean());
+                game.setMultiplier1(2);
+                game.setMultiplierX(2);
+                game.setMultiplier2(2);
+                gameRepository.save(game);
+
+                if (jsonObject.has("kickoff_time") && !jsonObject.get("kickoff_time").isJsonNull()) {
+                    String kickoffTime = jsonObject.get("kickoff_time").getAsString();
+
+                    SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+                    Date date;
+
+                    try {
+
+                        date = inputFormat.parse(kickoffTime);
+
+                    } catch (ParseException e) {
+
+                        e.printStackTrace();
+                        return;
+                    }
+
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy", Locale.US);
+                    String formattedDate = dateFormat.format(date);
+
+                    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.US);
+                    String formattedTime = timeFormat.format(date);
+
+                    game.setDateStr(formattedDate);
+                    game.setTimeStr(formattedTime);
+
                 }
                 else {
-                    game.setHomeTeamScore(0);
+
+                    game.setDateStr("TBD");
+                    game.setTimeStr("TBD");
+
                 }
-                
+        
+                gameRepository.save(game);
             }
-            else {
-                game.setHasStarted(false);
-            }
-            game.setHasFinished(jsonObject.get("finished").getAsBoolean());
-            gameRepository.save(game);
-
-            if (jsonObject.has("kickoff_time") && !jsonObject.get("kickoff_time").isJsonNull()) {
-                String kickoffTime = jsonObject.get("kickoff_time").getAsString();
-
-                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-                Date date;
-
-                try {
-
-                    date = inputFormat.parse(kickoffTime);
-
-                } catch (ParseException e) {
-
-                    e.printStackTrace();
-                    return;
-                }
-
-                SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy", Locale.US);
-                String formattedDate = dateFormat.format(date);
-
-                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.US);
-                String formattedTime = timeFormat.format(date);
-
-                game.setDateStr(formattedDate);
-                game.setTimeStr(formattedTime);
-
-            }
-            else {
-
-                game.setDateStr("TBD");
-                game.setTimeStr("TBD");
-
-            }
-    
-            gameRepository.save(game);
         }
     }
 
@@ -118,6 +133,12 @@ public class GameServiceImplentation implements GameService{
 
     @Override
     public Game createGame(Game game) {
+        if (!game.isPaidOut()) {
+            if (game.isHasFinished()) {
+                updateBets(game);
+                game.setPaidOut(true);
+            }
+        }
         return gameRepository.save(game);
     }
 
@@ -128,12 +149,6 @@ public class GameServiceImplentation implements GameService{
     }
 
     @Override
-    public String getGameInfo(long id) {
-
-        return null;
-    }
-
-    @Override
     public List<Game> getGamesList() {
         return gameRepository.findAll();
     }
@@ -141,6 +156,29 @@ public class GameServiceImplentation implements GameService{
     @Override
     public Game getGame(long id) {
         return gameRepository.findById(id);
+    }
+
+    public boolean updateBets(Game game) {
+        List<Bet> bets = betService.getBetsList();
+        for (Bet bet:bets) {
+            if (bet.getGameId() == game.getId()) {
+                User user = userService.getById(bet.getUserId());
+                if ((bet.getSelectedTeam() == "1") && (game.getHomeTeamScore() > game.getAwayTeamScore())) {
+                    user.setBalance(user.getBalance() + game.getMultiplier1() * bet.getAmount());
+                    userService.createUser(user);
+                }
+                if ((bet.getSelectedTeam() == "2") && (game.getHomeTeamScore() < game.getAwayTeamScore())) {
+                    user.setBalance(user.getBalance() + game.getMultiplier2() * bet.getAmount());
+                    userService.createUser(user);
+                }
+                if ((bet.getSelectedTeam() == "X") && (game.getHomeTeamScore() == game.getAwayTeamScore())) {
+                    user.setBalance(user.getBalance() + game.getMultiplierX() * bet.getAmount());
+                    userService.createUser(user);
+                }
+            }
+        }
+        return true;
+
     }
     
 }

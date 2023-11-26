@@ -23,6 +23,10 @@ public class Game{
     private String timeStr;
     private boolean userHasBetted;
     private long betId;
+    private double multiplier1;
+    private double multiplierX;
+    private double multiplier2;
+    private boolean paidOut;
 
     public String getDateStr() {
         return dateStr;
@@ -42,7 +46,7 @@ public class Game{
 
     public Game() {}
 
-    public Game(String homeTeam, String awayTeam, int homeTeamScore, int awayTeamScore, boolean hasStarted, boolean hasFinished, String dateStr, String timeStr, boolean userHasBetted, long betId) {
+    public Game(String homeTeam, String awayTeam, int homeTeamScore, int awayTeamScore, boolean hasStarted, boolean hasFinished, String dateStr, String timeStr, boolean userHasBetted, long betId, double multiplier1, double multiplierX, double multiplier2, boolean paidOut) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.homeTeamScore = homeTeamScore;
@@ -53,6 +57,42 @@ public class Game{
         this.timeStr = timeStr;
         this.userHasBetted = userHasBetted;
         this.betId = betId;
+        this.multiplier1 = multiplier1;
+        this.multiplierX = multiplierX;
+        this.multiplier2 = multiplier2;
+        this.paidOut = paidOut;
+    }
+
+    public double getMultiplier1() {
+        return multiplier1;
+    }
+
+    public void setMultiplier1(double multiplier1) {
+        this.multiplier1 = multiplier1;
+    }
+
+    public double getMultiplierX() {
+        return multiplierX;
+    }
+
+    public boolean isPaidOut() {
+        return paidOut;
+    }
+
+    public void setPaidOut(boolean paidOut) {
+        this.paidOut = paidOut;
+    }
+
+    public void setMultiplierX(double multiplierX) {
+        this.multiplierX = multiplierX;
+    }
+
+    public double getMultiplier2() {
+        return multiplier2;
+    }
+
+    public void setMultiplier2(double multiplier2) {
+        this.multiplier2 = multiplier2;
     }
 
     public long getId() {

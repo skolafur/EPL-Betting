@@ -26,18 +26,16 @@ public class BetController {
     private BetService betService;
     private GameService gameService;
     private UserService userService;
-    private UserController userController;
 
-    public BetController(BetService betService, GameService gameService, UserService userService, UserController userController) {
+    public BetController(BetService betService, GameService gameService, UserService userService) {
         this.betService = betService;
         this.gameService = gameService;
         this.userService = userService;
-        this.userController = userController;
     }
 
     @RequestMapping("/betslist")
     public String betsPage(Model model, HttpSession session) {
-        if (userController.checkLogin(session)) {
+        if (checkLogin(session)) {
             return "redirect:/login";
         }
         else {
@@ -45,9 +43,11 @@ public class BetController {
             List<Bet> bets;
             if (user.isAdmin()) {
                 bets = betService.getBetsList();
+                model.addAttribute("isAdmin", true);
             }
             else {
                 bets = betService.getBetsByUserId(user.getId());
+                model.addAttribute("isAdmin", false);
             }
             model.addAttribute("bets", bets);
             return "bets";
@@ -56,7 +56,7 @@ public class BetController {
 
     @RequestMapping(value = "/makeormodify/{id}", method = RequestMethod.GET)
     public String makeormodify(@PathVariable("id") int id, Model model, HttpSession session, HttpServletRequest request) {
-        if (userController.checkLogin(session)) {
+        if (checkLogin(session)) {
             return "redirect:/login";
         }
         else {
@@ -72,7 +72,7 @@ public class BetController {
 
     @RequestMapping(value = "/gameinfo/{id}", method = RequestMethod.GET)
     public String viewGame(@PathVariable("id") int id, Model model, HttpSession session, HttpServletRequest request) {
-        if (userController.checkLogin(session)) {
+        if (checkLogin(session)) {
             return "redirect:/login";
         }
         else {
@@ -80,18 +80,20 @@ public class BetController {
             if (!game.isHasStarted()) {
                 model.addAttribute("homeTeam", game.getHomeTeam());
                 model.addAttribute("awayTeam", game.getAwayTeam());
+                model.addAttribute("multiplier1", game.getMultiplier1());
+                model.addAttribute("multiplierX", game.getMultiplierX());
+                model.addAttribute("multiplier2", game.getMultiplier2());
                 User user = (User) session.getAttribute("LoggedInUser");
                 Bet bet = betService.getBet(id, user.getId());
                 if (bet == null) {
                     Bet newBet = betService.createBet(new Bet());
                     newBet.setGameId(game.getId());
                     newBet.setUserId(user.getId());
-                    newBet.setMultiplier1(2);
-                    newBet.setMultiplierX(2);
-                    newBet.setMultiplier2(2);
                     betService.createBet(newBet);
+                    gameService.createGame(game);
                     session.setAttribute("newBet", newBet);
                     model.addAttribute("bet", newBet);
+                    model.addAttribute("game", game);
                     session.setAttribute("gameId", newBet.getGameId());
                     String currentUrl = request.getRequestURL().toString();
                     session.setAttribute("currentUrl", currentUrl);
@@ -104,7 +106,7 @@ public class BetController {
 
     @RequestMapping(value = "/betPOST", method = RequestMethod.POST)
     public String betPOST(@ModelAttribute("bet") Bet bet, User user, BindingResult result, Model model, HttpSession session) {
-        if (userController.checkLogin(session)) {
+        if (checkLogin(session)) {
             return "redirect:/login";
         }
         else {
@@ -141,7 +143,7 @@ public class BetController {
 
     @RequestMapping(value = "/modifybetPOST", method = RequestMethod.POST)
     public String modifybetPOST(@ModelAttribute("bet") Bet bet, User user, BindingResult result, Model model, HttpSession session) {
-        if (userController.checkLogin(session)) {
+        if (checkLogin(session)) {
             return "redirect:/login";
         }
         else {
@@ -176,7 +178,7 @@ public class BetController {
 
     @RequestMapping(value="/modifyBet/{id}", method = RequestMethod.GET)
     public String modifyBet(@PathVariable("id") long id, Model model, HttpSession session, HttpServletRequest request){
-        if (userController.checkLogin(session)) {
+        if (checkLogin(session)) {
             return "redirect:/login";
         }
         else {
@@ -194,7 +196,7 @@ public class BetController {
 
     @RequestMapping(value="/deleteBet/{id}", method = RequestMethod.GET)
     public String deleteBet(@PathVariable("id") long id, Model model, HttpSession session){
-        if (userController.checkLogin(session)) {
+        if (checkLogin(session)) {
             return "redirect:/login";
         }
         else {
@@ -207,8 +209,23 @@ public class BetController {
             game.setBetId(bet.getId());
             gameService.createGame(game);
             betService.deleteBet(bet);
+            User loggedIn = (User) session.getAttribute("LoggedInUser");
+            if (!loggedIn.isAdmin()) {
+                session.setAttribute("LoggedInUser", loggedIn);
+            }
             return "redirect:/betslist";
         }
+    }
+
+    public boolean checkLogin(HttpSession session) {
+        User user = (User) session.getAttribute("LoggedInUser");
+        if (user == null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
     }
 
 }

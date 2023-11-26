@@ -5,7 +5,6 @@
     <title>Title</title>
 </head>
 <body>
-
     <div th:switch="${games}">
         <h2 th:case="null">No Games yet!</h2>
         <div th:case="*">
@@ -44,7 +43,11 @@
                     <td th:text="${game.awayTeam}" th:style="'color: ' + (${game.hasStarted} ? (${game.hasFinished} ? 'red' : 'green') : 'black')"></td>
                     <td>&nbsp;&nbsp;
                     <td>
-                        <a th:if="${!game.hasStarted}" th:href="@{/makeormodify/{id}(id=${game.id})}" >Bet</a>
+                        <a th:if="${userRole} == false" th:href="@{/makeormodify/{id}(id=${game.id})}" th:unless="${game.hasStarted}">Bet</a>
+                    </td>
+                    <td>&nbsp;&nbsp;
+                    <td>
+                        <a th:if="${userRole} == true" th:href="@{/editGame/{id}(id=${game.id})}">Edit</a>
                     </td>
                     <td>&nbsp;&nbsp;
                 </tr>

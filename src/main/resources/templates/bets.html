@@ -5,7 +5,6 @@
     <title>Bets</title>
 </head>
 <body>
-
     <div th:switch="${bets}">
         <h2 th:case="null">No Bets yet!</h2>
         <div th:case="*">
@@ -13,6 +12,9 @@
             <table>
                 <thead>
                 <tr>
+                    <div th:if="${isAdmin}">
+                        <th>User ID</th>
+                    </div>
                     <th>Game ID</th>
                     <th>Selected Team</th>
                     <th>Amount</th>
@@ -20,6 +22,9 @@
                 </thead>
                 <tbody>
                 <tr th:each="bet : ${bets}">
+                    <div th:if="${isAdmin}">
+                        <td th:text="${bet.userId}"></td>
+                    </div>
                     <td th:text="${bet.gameId}"></td>
                     <td th:text="${bet.selectedTeam}"></td>
                     <td th:text="${bet.amount}"></td>

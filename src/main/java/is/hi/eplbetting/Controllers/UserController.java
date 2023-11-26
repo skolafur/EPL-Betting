@@ -51,7 +51,6 @@ public class UserController {
             User sessionUser = (User) session.getAttribute("LoggedInUser");
             model.addAttribute("LoggedInUsername", sessionUser.getUsername());
             model.addAttribute("userRole", sessionUser.isAdmin());
-            System.out.println(sessionUser.isAdmin());
             return "main";
         }
     }
